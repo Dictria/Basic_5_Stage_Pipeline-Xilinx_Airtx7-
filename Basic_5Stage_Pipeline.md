@@ -1,7 +1,7 @@
 # 基础五级流水线指令集
-* ADDU, ADDIU, SUBU, SLT, SLTU, SLL, SRL, SRA, AND, OR, XOR, NOR
+* ADDU, ADDIU, SUBU, SLL, SRL, SRA, AND, OR, XOR, NOR
 * LW, SW
-* BEQ, BNE, JAL, JR
+* BEQ, BNE, JAL, JR, SLT, SLTU
 * LUI,
 # 流水线划分
 * IF, ID, EX, MEM, WB
@@ -65,4 +65,4 @@ output          ds_to_es_valid
 |11|op_lui|LUI|
 ## Controller（集成于module ID_stage）信号
 直接流水指令的独热码？流水各部件控制信号？  
-**由于目前指令较少，暂时采用1**  
+**暂时采用2**  
