@@ -10,7 +10,7 @@ module decoder_3_8(
 		end
 	endgenerate
 
-endmodule : decoder_3_8
+endmodule
 
 module decoder_4_16(
 	input	[3:0]	in,
@@ -24,7 +24,7 @@ module decoder_4_16(
 		end
 	endgenerate
 
-endmodule : decoder_4_16
+endmodule
 
 module decoder_5_32(
 	input	[4:0]	in,
@@ -38,7 +38,7 @@ module decoder_5_32(
 		end
 	endgenerate
 
-endmodule : decoder_5_32
+endmodule
 
 module decoder_6_64(
 	input	[5:0]	in,
@@ -52,4 +52,4 @@ module decoder_6_64(
 		end
 	endgenerate
 
-endmodule : decoder_6_64
+endmodule
