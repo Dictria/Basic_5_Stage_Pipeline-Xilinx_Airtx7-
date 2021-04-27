@@ -78,7 +78,7 @@ id_stage id_stage(
 	.ws_to_rf_bus(ws_to_rf_bus)
 );
 
-ex_stage ex_stage(
+exe_stage exe_stage(
 	.clk(clk),
 	.reset(reset),
 	//allowin

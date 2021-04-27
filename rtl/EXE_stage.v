@@ -22,32 +22,36 @@ module exe_stage(
 reg  es_valid;
 wire es_ready_go;
 
-reg  [`DS_TO_ES_ DS_TO_MS_BUS_WD-1:0] 	ds_to_es_bus_r;
-wire [11:0] 							es_alu_op;
-wire 									es_load_op;
-wire 									es_src1_is_sa;
-wire 									es_src1_is_pc;
-wire 									es_src2_is_imm;
-wire 									es_src2_is_8;
-wire 									es_gr_we;
-wire 									es_mem_we;
-wire [ 4:0] 							es_dest;
-wire [15:0] 							es_imm;
-wire [31:0] 							es_rf_rdata1;
-wire [31:0] 							es_rf_rdata2;
-wire [31:0] 							es_pc;
-assign {es_alu_op, //135:124
-		es_load_op,//123:123
-		es_src1_is_sa,//122:122
-		es_src1_is_pc,//121:121
-		es_src2_is_imm,//120:120
-		es_src2_is_8,//119:119
-		es_gr_we,//118:118
-		es_mem_we,//117:117
-		es_dest,//116:112
-		es_imm,//111:96
-		es_rf_rdata1,//95:64
-		es_rf_rdata2,//63:32
+reg	[`DS_TO_ES_ DS_TO_MS_BUS_WD-1:0]	ds_to_es_bus_r;
+wire	[11:0]							es_alu_op;
+wire									es_load_op;
+wire									es_src1_is_sa;
+wire									es_src1_is_pc;
+wire									es_src2_is_imm;
+wire									es_src2_is_8;
+wire									es_gr_we;
+wire									es_mem_we;
+wire	[ 4:0]							es_dest;
+wire	[15:0]							es_imm;
+wire	[31:0]							es_rf_rdata1;
+wire	[31:0]							es_rf_rdata2;
+wire	[4:0]							es_rf_raddr1;
+wire	[4:0]							es_rf_raddr2;
+wire	[31:0]							es_pc;
+assign {es_alu_op, //145:134
+		es_load_op,//133:133
+		es_src1_is_sa,//132:132
+		es_src1_is_pc,//131:131
+		es_src2_is_imm,//130:130
+		es_src2_is_8,//129:129
+		es_gr_we,//128:128
+		es_mem_we,//127:127
+		es_dest,//126:122
+		es_imm,//121:106
+		es_rf_rdata1,//105:74
+		es_rf_raddr1,//73:69
+		es_rf_rdata2,//68:37
+		es_rf_raddr2,//36:32
 		es_pc//31:0
 		} = ds_to_es_bus_r;
 

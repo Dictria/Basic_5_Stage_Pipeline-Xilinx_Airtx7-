@@ -33,8 +33,9 @@ module if_stage(
 	
 	wire [31:0] fs_instr;
 	reg  [31:0] fs_pc;
-	assign fs_to_ds_bus = {fs_instr,
-							fs_pc};
+	assign fs_to_ds_bus = {fs_instr, //63:32
+							fs_pc //31:0
+							};
 
 	// pre_IF stage
 	assign to_fs_valid = ~reset;
@@ -43,7 +44,7 @@ module if_stage(
 	// IF stage
 	assign fs_ready_go    = 1'b1;
 	assign fs_allow_in    = !fs_valid || fs_ready_go && ds_allowin;
-	assign fs_to_ds_valid = fs_valid && fs_ready_go;
+	assign fs_to_ds_valid =  fs_valid && fs_ready_go;
 
 	always @(posedge clk) begin 
 		if(reset) begin 

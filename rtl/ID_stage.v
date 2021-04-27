@@ -1,24 +1,24 @@
 `include "defination.h"
 
 module id_stage(
-	input clk,
-	input reset,
+	input 							clk				,
+	input 							reset 			,
 	//allowin
-	input es_allowin,
-	output ds_allowin,
+	input 							es_allowin		,
+	output 							ds_allowin		,
 	//from fs
-	input fs_to_ds_valid,
-	input [`FS_TO_DS_BUS_WD-1:0] fs_to_ds_bus,
+	input 							fs_to_ds_valid	,
+	input 	[`FS_TO_DS_BUS_WD-1:0] 	fs_to_ds_bus 	,
 	//to es
-	output ds_to_es_valid,
-	output [`DS_TO_ES_BUS_WD-1:0] ds_to_es_bus,
+	output 							ds_to_es_valid	,
+	output [`DS_TO_ES_BUS_WD-1:0] 	ds_to_es_bus 	,
 	//to fs
-	output [`JUMP_BUS_WD-1:0] jump_bus,
+	output [`JUMP_BUS_WD	-1:0] 	jump_bus 		,
 	//to rf: for write back
-	input  [`WS_TO_RF_BUS_WD] ws_to_rf_bus
+	input  [`WS_TO_RF_BUS_WD-1:0] 	ws_to_rf_bus
 );
 
-reg ds_valid;
+reg  ds_valid;
 wire ds_ready_go;
 
 //wire [31:0] fs_pc;
@@ -28,30 +28,30 @@ reg [`FS_TO_DS_BUS_WD-1:0] fs_to_ds_bus_r; //pipeline register
 wire [31:0] ds_instr;
 wire [31:0] ds_pc;
 assign {ds_instr,
-		ds_pc} = fs_to_ds_bus_r
+		ds_pc
+		} = fs_to_ds_bus_r
 
-wire rf_we;
-wire [4:0] rf_waddr;
-wire [31:0] rf_wdata;
+wire			rf_we;
+wire	[ 4:0]	rf_waddr;
+wire	[31:0]	rf_wdata;
 assign {rf_we,//37:37
 		rf_waddr,//36:32
 		rf_wdata //31:0
 		} = ws_to_rf_bus;
 
-wire jump_taken;
-wire [31:0] jump_target;
-
-wire [11:0] alu_op;
-wire load_op;
-wire src1_is_sa;
-wire src1_is_pc;
-wire src2_is_imm;
-wire src2_is_8;
-wire res_from_mem;
-wire gr_we;
-wire mem_we;
-wire [ 4:0] dest;
-wire [15:0] imm;
+wire			jump_taken;
+wire	[31:0]	jump_target;
+wire	[11:0]	alu_op;
+wire			load_op;
+wire			src1_is_sa;
+wire			src1_is_pc;
+wire			src2_is_imm;
+wire			src2_is_8;
+wire			res_from_mem;
+wire			gr_we;
+wire			mem_we;
+wire	[ 4:0]	dest;
+wire	[15:0]	imm;
 //wire [31:0] rs_value;
 //wire [31:0] rt_value;
 
@@ -68,6 +68,8 @@ wire [31:0] rt_d;
 wire [31:0] rd_d;
 wire [31:0] sa_d;
 wire [63:0] func_d;
+wire dst_is_r31;
+wire dst_is_rt;
 
 wire instr_addu;
 wire instr_subu;
@@ -89,9 +91,6 @@ wire instr_bne;
 wire instr_jal;
 wire instr_jr;
 
-wire dst_is_r31;
-wire dst_is_rt;
-
 wire [ 4:0] rf_raddr1;
 wire [31:0] rf_rdata1;
 wire [ 4:0] rf_raddr2;
@@ -112,16 +111,18 @@ assign ds_to_es_bus = {alu_op,//135:124
 					   dest,//116:112
 					   imm,//111:96
 					   rf_rdata1,//95:64
-					   rf_rdata2,//63:32
+					   rf_raddr1,//73:69
+					   rf_rdata2,//68:37
+					   rf_raddr2,//36:32
 					   ds_pc//31:0
 					   };
-assign ds_ready_go = 1'b1;
-assign ds_allowin = !ds_valid || ds_ready_go && es_allowin;
-assign ds_to_es_valid = ds_valid && ds_ready_go;
+assign ds_ready_go    = 1'b1;
+assign ds_allowin     = !ds_valid || ds_ready_go && es_allowin;
+assign ds_to_es_valid =  ds_valid && ds_ready_go;
 
 always @(posedge clk) begin 
 	if(fs_to_ds_valid && ds_allowin) begin 
-		fs_to_ds_bus <= fs_to_ds_bus_r;
+		fs_to_ds_bus_r <= fs_to_ds_bus;
 	end
 end
 
@@ -184,8 +185,8 @@ assign dst_is_rt    = instr_addiu | instr_lui | instr_lw;
 assign gr_we        = ~instr_sw & ~instr_beq & ~instr_bne & ~instr_jr;
 
 assign dest = dst_is_r31 ? 5'd31 :
-				 dst_is_rt  ? rt    :
-				 			  rd;
+			  dst_is_rt  ? rt    :
+				 		   rd;
 
 assign rf_raddr1 = rs;
 assign rf_raddr2 = rt;
@@ -206,7 +207,7 @@ assign jump_taken = (  instr_beq &&  rs_eq_rt
 					|| instr_jal
 					|| instr_jr) && ds_valid;
 assign jump_target = (instr_beq || instr_bne) ? (ds_pc + {{14{imm[15]}},imm[15:0],2'b0}):
-					 (instr_jr) 			  ? rf_rdata1:
-					/*instr_jal*/			    {fs_pc[31:28],index[25:0],2'b0};
+					 (instr_jr) 			  ? rf_rdata1								:
+					/*instr_jal*/			    {ds_pc[31:28],index[25:0],2'b0};
 
 endmodule

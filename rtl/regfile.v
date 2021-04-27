@@ -18,9 +18,10 @@ always @(posedge clk) begin
 		rf[waddr] <= wdata;
 	end
 end
+
 //read 1
-assign rdata1 = rf[raddr1];
+assign rdata1 = (raddr1 == waddr && we) ? wdata : rf[raddr1];
 //read2
-assign rdata2 = rf[raddr2];
+assign rdata2 = (raddr2 == waddr && we) ? wdata : rf[raddr2];
 
 endmodule
